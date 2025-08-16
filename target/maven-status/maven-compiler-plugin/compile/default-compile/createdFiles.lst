@@ -1,0 +1,15 @@
+com\ejemplo\proyecto\dao\HistoricoInventarioDAO.class
+com\ejemplo\proyecto\model\Usuario.class
+com\ejemplo\proyecto\filter\SessionFilter.class
+com\ejemplo\proyecto\Controller\HistoricoInventarioController.class
+com\ejemplo\proyecto\model\Producto.class
+com\ejemplo\proyecto\dao\ProductoDAO.class
+com\ejemplo\proyecto\config\Conexion.class
+com\ejemplo\proyecto\Controller\LogoutController.class
+com\ejemplo\proyecto\model\HistoricoInventario.class
+com\ejemplo\proyecto\dao\MovimientoDAO.class
+com\ejemplo\proyecto\dao\UsuarioDAO.class
+com\ejemplo\proyecto\Controller\ProductosController.class
+com\ejemplo\proyecto\Controller\LoginController.class
+com\ejemplo\proyecto\Controller\SalidasController.class
+com\ejemplo\proyecto\model\Movimiento.class
