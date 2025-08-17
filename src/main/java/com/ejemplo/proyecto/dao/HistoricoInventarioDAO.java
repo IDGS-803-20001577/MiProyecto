@@ -45,6 +45,55 @@ public class HistoricoInventarioDAO {
         return lista;
     }
 
+    public List<HistoricoInventario> listaHistoricoFiltrado(String producto, String fecha) {
+        List<HistoricoInventario> lista = new ArrayList<>();
+        String sql = "SELECT h.idMovimiento, h.idProducto, p.nombre as nombreProducto, h.accion, "
+                + "h.cantidad, h.fecha_Movimiento, h.idUsuario, u.nombre as nombreUsuario "
+                + "FROM Historico_Inventario h "
+                + "INNER JOIN productos p ON h.idProducto = p.idProducto "
+                + "INNER JOIN usuarios u ON u.idUsuario = h.idUsuario "
+                + "WHERE 1=1 ";
+
+        if (producto != null && !producto.isEmpty()) {
+            sql += " AND p.nombre LIKE ? ";
+        }
+        if (fecha != null && !fecha.isEmpty()) {
+            sql += " AND CAST(h.fecha_Movimiento AS DATE) = ? ";
+        }
+
+        sql += " ORDER BY h.fecha_Movimiento DESC";
+
+        try (Connection con = Conexion.getConnection(); PreparedStatement ps = con.prepareStatement(sql)) {
+
+            int paramIndex = 1;
+            if (producto != null && !producto.isEmpty()) {
+                ps.setString(paramIndex++, "%" + producto + "%");
+            }
+            if (fecha != null && !fecha.isEmpty()) {
+                ps.setString(paramIndex++, fecha);
+            }
+
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    HistoricoInventario h = new HistoricoInventario();
+                    h.setIdMovimiento(rs.getInt("idMovimiento"));
+                    h.setIdProducto(rs.getInt("idProducto"));
+                    h.setNombreProducto(rs.getString("nombreProducto"));
+                    h.setAccion(rs.getString("accion"));
+                    h.setCantidad(rs.getInt("cantidad"));
+                    h.setFechaMovimiento(rs.getTimestamp("fecha_Movimiento"));
+                    h.setIdUsuario(rs.getInt("idUsuario"));
+                    h.setNombreUsuario(rs.getString("nombreUsuario"));
+
+                    lista.add(h);
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return lista;
+    }
+
     public void insertarHistorico(HistoricoInventario h) {
         String sql = "INSERT INTO Historico_Inventario(idProducto, accion, cantidad, fecha_Movimiento, idUsuario) "
                 + "VALUES (?, ?, ?, ?, ?)";
