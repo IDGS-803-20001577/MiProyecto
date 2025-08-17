@@ -10,7 +10,7 @@ Permite registrar productos, gestionar entradas y salidas de inventario y manten
 - **IDE**: NetBeans 25  
 - **Lenguaje de programación**: Java SE 8  
 - **Servidor de aplicaciones**: Apache Tomcat 9.0  
-- **DBMS**: SQLServer  
+- **DBMS**: SQLServer Managment Studio 20  
 - **Gestor de dependencias**: JDBC
 
 ---
