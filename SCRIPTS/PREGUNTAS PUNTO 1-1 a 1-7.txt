@@ -1,0 +1,46 @@
+--1.1) Describe el funcionamiento general de la sentencia JOIN.
+--la sentencia JOIN en SQL se usa para combinar datos de dos o más tablas basándose en una columna relacionada entre ellas.
+
+--1.2) ¿Cuáles son los tipos de JOIN y cuál es el funcionamiento de los mismos?
+	--1. INNER JOIN Devuelve solo las filas que tienen coincidencia en ambas tablas. Si no hay coincidencia, no se muestran.
+	--2. LEFT JOIN Devuelve todas las filas de la primera tabla y las coincidencias de la tabla derecha. Si no hay coincidencia, las columnas de la derecha seran NULL. 
+	--3. RIGHT JOIN Devuelve todas las filas de la tabla derecha y las coincidencias de la izquierda. Si no hay coincidencia, las columnas de la izquierda seran NULL.
+	--4. FULL JOIN Devuelve todas las filas de ambas tablas, coincidan o no. Donde no hay coincidencia, se seran con NULL.
+	--5. CROSS JOIN Devuelve todas las combinaciones posibles de filas entre ambas tablas.
+
+--1.3) ¿Cuál el funcionamiento general de los TRIGGER y qué propósito tienen?
+	--Un TRIGGER (disparador) es un tipo especial de objeto en la base de datos que se ejecuta automáticamente cuando ocurre un evento específico sobre una tabla o vista.
+	--Eventos que lo activan: INSERT - cuando se insertan registros. UPDATE - cuando se actualizan registros. DELETE - cuando se eliminan registros.
+	--Funcionamiento general:
+		--El usuario o aplicación realiza una operación por ejemplo insertar un registro. 
+		--El TRIGGER se dispara automáticamente sin que el usuario lo invoque.
+		--Ejecuta las instrucciones que se definieron dentro de él (validaciones, auditorías, actualizaciones en otras tablas, etc.).
+
+--1.4) ¿Qué es y para qué sirve un STORED PROCEDURE?
+	--son conjuntos de sentencias SQL guardadas y almacenadas en una base de datos. Pueden ejecutarse bajo un comando para realizar tareas de manipulación y validación de datos.
+	--Se crea con CREATE PROCEDURE y se guarda en la BD y se ejecuta con EXEC o EXECUTE enviando los parámetros necesarios.
+
+
+--1.5) Traer todos los productos que tengan una venta.
+SELECT DISTINCT p.*
+FROM Productos p
+	INNER JOIN Ventas v ON v.idProducto = p.idProducto
+
+--1.6) Traer todos los productos que tengan ventas y la cantidad total de productos vendidos.
+SELECT p.nombre, sum(v.cantidad) AS total_vendido
+FROM productos p
+	INNER JOIN ventas v
+	ON v.idProducto = p.idProducto
+group by p.nombre
+
+--1.7) Traer todos los productos (incliuso de si tienen ventas o no) y la suma total ($) vendida por producto.
+SELECT
+	p.nombre,
+	ISNULL(SUM(v.cantidad * p.precio), 0) AS total_vendido_dinero
+FROM productos p
+	LEFT JOIN ventas v
+	ON v.idProducto = p.idProducto
+GROUP BY 
+    p.nombre, 
+    p.precio
+ORDER BY total_vendido_dinero DESC;
