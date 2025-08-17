@@ -32,6 +32,7 @@ public class ProductosController extends HttpServlet {
             throws ServletException, IOException {
 
         ProductoDAO dao = new ProductoDAO();
+        HistoricoInventarioDAO hdao = new HistoricoInventarioDAO();
         String accion = request.getParameter("accion");
         HistoricoInventarioDAO historicoDAO = new HistoricoInventarioDAO();
 
@@ -40,7 +41,6 @@ public class ProductosController extends HttpServlet {
                 String nombre = request.getParameter("nombre");
                 if (nombre != null && !nombre.trim().isEmpty()) {
                     boolean insertado = dao.agregarProducto(nombre.trim());
-
                     if (insertado) {
                         // Buscar el ID del producto recién insertado
                         int idProducto = dao.obtenerIdPorNombre(nombre.trim());
@@ -48,11 +48,10 @@ public class ProductosController extends HttpServlet {
                         // Crear objeto historico
                         HistoricoInventario h = new HistoricoInventario();
                         h.setIdProducto(idProducto);
-                        h.setAccion("AGREGAR");   // Puedes usar texto o enumeración
+                        h.setAccion("Entrada");   // Puedes usar texto o enumeración
                         h.setCantidad(0);         // porque al inicio siempre es 0
                         h.setFechaMovimiento(new java.util.Date());
                         h.setIdUsuario(1);        // aquí debes meter el usuario logueado
-
                         historicoDAO.insertarHistorico(h);
                     }
                 }
@@ -60,8 +59,7 @@ public class ProductosController extends HttpServlet {
                 int id = Integer.parseInt(request.getParameter("id"));
                 int cantidad = Integer.parseInt(request.getParameter("cantidad"));
                 dao.aumentarInventario(id, cantidad);
-
-                // Histórico
+              
                 HistoricoInventario h = new HistoricoInventario();
                 h.setIdProducto(id);
                 h.setAccion("AUMENTAR");
@@ -69,6 +67,7 @@ public class ProductosController extends HttpServlet {
                 h.setFechaMovimiento(new java.util.Date());
                 h.setIdUsuario(1); // usuario de sesión
                 historicoDAO.insertarHistorico(h);
+
             } else if ("cambiarEstatus".equals(accion)) {
                 int id = Integer.parseInt(request.getParameter("id"));
                 int estatus = Integer.parseInt(request.getParameter("estatus"));
