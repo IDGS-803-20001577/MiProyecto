@@ -34,6 +34,7 @@ public class ProductosController extends HttpServlet {
         ProductoDAO dao = new ProductoDAO();
         HistoricoInventarioDAO hdao = new HistoricoInventarioDAO();
         String accion = request.getParameter("accion");
+        HistoricoInventarioDAO historicoDAO = new HistoricoInventarioDAO();
 
         try {
             if ("agregar".equals(accion)) {
@@ -51,23 +52,21 @@ public class ProductosController extends HttpServlet {
                         h.setCantidad(0);         // porque al inicio siempre es 0
                         h.setFechaMovimiento(new java.util.Date());
                         h.setIdUsuario(1);        // aquí debes meter el usuario logueado
-
+                        historicoDAO.insertarHistorico(h);
                     }
                 }
             } else if ("aumentar".equals(accion)) {
                 int id = Integer.parseInt(request.getParameter("id"));
                 int cantidad = Integer.parseInt(request.getParameter("cantidad"));
                 dao.aumentarInventario(id, cantidad);
-
-                //Historico
+              
                 HistoricoInventario h = new HistoricoInventario();
-                hdao.insertarHistorico(h);
                 h.setIdProducto(id);
                 h.setAccion("AUMENTAR");
                 h.setCantidad(cantidad);
                 h.setFechaMovimiento(new java.util.Date());
                 h.setIdUsuario(1); // usuario de sesión
-                hdao.insertarHistorico(h);
+                historicoDAO.insertarHistorico(h);
 
             } else if ("cambiarEstatus".equals(accion)) {
                 int id = Integer.parseInt(request.getParameter("id"));

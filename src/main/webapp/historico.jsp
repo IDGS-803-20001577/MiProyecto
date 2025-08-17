@@ -4,8 +4,16 @@
 <%@ page import="java.util.List" %>
 
 <%
+    String productoFiltro = request.getParameter("producto") != null ? request.getParameter("producto") : "";
+    String fechaFiltro = request.getParameter("fecha") != null ? request.getParameter("fecha") : "";
+
     HistoricoInventarioDAO dao = new HistoricoInventarioDAO();
-    List<HistoricoInventario> lista = dao.listaHistorico();
+    List<HistoricoInventario> lista;
+    if (!productoFiltro.isEmpty() || !fechaFiltro.isEmpty()) {
+        lista = dao.listaHistoricoFiltrado(productoFiltro, fechaFiltro);
+    } else {
+        lista = dao.listaHistorico();
+    }
 %>
 
 <!-- Bootstrap CSS y JS -->
@@ -16,6 +24,25 @@
 
 <div class="text-center mb-3">
     <a href="index.jsp" class="btn btn-secondary">Regresar al inicio</a>
+</div>
+
+<!-- Formulario de filtros -->
+<div class="container mb-4">
+    <form method="get" class="row g-3 justify-content-center">
+        <div class="col-auto">
+            <input type="text" class="form-control" name="producto" placeholder="Nombre del producto"
+                   value="<%= productoFiltro%>">
+        </div>
+        <div class="col-auto">
+            <input type="date" class="form-control" name="fecha" value="<%= fechaFiltro%>">
+        </div>
+        <div class="col-auto">
+            <button type="submit" class="btn btn-primary">Filtrar</button>
+        </div>
+        <div class="col-auto">
+            <a href="historico.jsp" class="btn btn-secondary">Limpiar</a>
+        </div>
+    </form>
 </div>
 
 <div class="table-responsive">
@@ -39,6 +66,11 @@
                 <td><%= h.getCantidad()%></td>
                 <td><%= h.getFechaMovimiento()%></td>
                 <td><%= h.getNombreUsuario()%></td>
+            </tr>
+            <% } %>
+            <% if (lista.isEmpty()) { %>
+            <tr>
+                <td colspan="6">No se encontraron registros</td>
             </tr>
             <% }%>
         </tbody>
