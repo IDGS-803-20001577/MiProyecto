@@ -1,0 +1,53 @@
+--TABLA PRODUCTOS
+CREATE TABLE productos
+(
+	idProducto INT IDENTITY(1,1) PRIMARY KEY,
+	nombre VARCHAR(40) NOT NULL,
+	precio DECIMAL(16,2) NOT NULL,
+	estatus INT NOT NULL,
+);
+
+--INSERCION DE PRODUCTOS
+INSERT INTO productos
+VALUES
+	('LAPTOP', 3000.00,1),
+	('PC', 4000.00,1),
+	('MOUSE', 100.00,1),
+	('TECLADO', 150.00,1),
+	('MONITOR', 2000.00,1),
+	('MICROFONO', 350.00,1),
+	('AUDIFONOS', 450.00,1);
+
+--TABLA VENTAS
+CREATE TABLE ventas
+(
+	idVenta INT IDENTITY(1,1) PRIMARY KEY,
+	idProducto INT NOT NULL,
+	cantidad INT NOT NULL
+
+		CONSTRAINT FK_ventas_productos
+	FOREIGN KEY (idProducto)
+	REFERENCES productos(idProducto)
+);
+
+--TABLA DE USUARIOS
+CREATE TABLE usuarios (
+    idUsuario INT  IDENTITY(1,1) PRIMARY KEY,
+    nombre VARCHAR(50) NOT NULL,
+    correo VARCHAR(50) NOT NULL UNIQUE,
+    contrasena VARCHAR(255) NOT NULL,
+    idRol INT,
+	estatus int,
+);
+
+--TABLA HISTORICO
+CREATE TABLE Historico_Inventario (
+    idMovimiento INT IDENTITY(1,1) PRIMARY KEY,
+    idProducto INT NOT NULL,
+    accion VARCHAR(50) NOT NULL, -- "AUMENTO", "BAJA", "REACTIVACION"
+    cantidad INT,
+    fecha_Movimiento DATETIME NOT NULL DEFAULT GETDATE(),
+    idUsuario INT NOT NULL, -- si en usuarios es INT
+    FOREIGN KEY (idProducto) REFERENCES productos(idProducto),
+    FOREIGN KEY (idUsuario) REFERENCES usuarios(idUsuario)
+);
